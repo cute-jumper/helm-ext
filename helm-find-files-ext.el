@@ -26,6 +26,7 @@
 
 (require 'helm-files)
 
+(defvar helm-ff-ext-skipping-dots-recenter t)
 ;; helper functions
 (defvar helm-ff-expand-valid-only-p t)
 (defvar helm-ff-sort-expansions-p nil)
@@ -376,13 +377,19 @@ Use it for non--interactive calls of `helm-find-files'."
 
 (defun helm-ff--skip-dots (orig-func &rest args)
   (apply orig-func args)
-  (let ((src (helm-get-current-source)))
+  (let ((src (helm-get-current-source))
+        (flag nil))
     (while (and (not (helm-end-of-source-p))
                 (helm-dir-is-dot (helm-get-selection nil nil src)))
-      (helm-next-line))
+      (helm-next-line)
+      (setq flag t))
     (when (and (helm-end-of-source-p)
                (helm-dir-is-dot (helm-get-selection nil nil src)))
-      (helm-previous-line))))
+      (helm-previous-line))
+    (and helm-ff-ext-skipping-dots-recenter
+         flag
+         (with-helm-window
+           (recenter-top-bottom 0)))))
 
 ;;;###autoload
 (defun helm-ff-ext-enable-zsh-path-expansion (enable)
