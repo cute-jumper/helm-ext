@@ -39,3 +39,7 @@ upstream.
   Demo (note that the selection skips the first two entries, =.= and =..= when
   the directory is non-empty):
   [[./screencasts/skip-dots.gif]]
+
+* Disclaim
+  These are dirty hacks and it is highly likely that something may break after
+  the helm updates!
