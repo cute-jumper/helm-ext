@@ -18,7 +18,11 @@ A collection of dirty hacks for helm!
    Demo:
    [[./screencasts/zsh-expansion.gif]]
 
-   Here is an [[http://cute-jumper.github.io/emacs/2015/11/17/let-helm-support-zshlike-path-expansion][old blog]] of mine dicussing about this feature.
+   Here is an [[http://cute-jumper.github.io/emacs/2015/11/17/let-helm-support-zshlike-path-expansion][old blog]] of mine dicussing about this feature. Note that now helm
+   already has the ability to search the directory recursively using the
+   =locate= command as the backend, which is quite different. For me, I prefer
+   my own approach since it feels more consistent when I switch between =zsh=
+   and =helm=.
 
 ** Auto Path Expansion
    This feature is an improved version of the zsh-style path expansion. The
@@ -56,6 +60,11 @@ A collection of dirty hacks for helm!
 
    Demo:
    [[./screencasts/minibuffer-header.gif]]
+
+* Other Tools
+  [[https://github.com/cute-jumper/ace-jump-helm-line][ace-jump-helm-line]] can be used for quick navigation in the helm window, which
+  uses [[https://github.com/abo-abo/avy][avy]] behind the scenes. Helm itself also has a lightweight alternative
+  called =helm-linum-relative-mode= (type =C-x number= to select a candidate).
 
 * WARNING
   *These are dirty hacks and it is highly likely that something may break after
