@@ -34,6 +34,9 @@ A collection of dirty hacks for helm!
    Demo:
    [[./screencasts/auto-expansion.gif]]
 
+   To be improved: remove the restriction of only performing prefix matching in
+   each level, making the matching behave more "fuzzily".
+
 ** Skipping Dots
    When entering an *NON-EMPTY* directory using =helm-find-files=, skip the
    first two entries, =.= and =..=. But if the directory is *EMPTY*, the
@@ -58,6 +61,9 @@ A collection of dirty hacks for helm!
    To enable it:
    : (helm-minibuffer-ext-enable-header-line-maybe t)
 
+   Don't enable this one if you've already used the header line for inputting
+   the pattern by setting =helm-echo-input-in-header-line= to =t=.
+
    Demo:
    [[./screencasts/minibuffer-header.gif]]
 
@@ -67,5 +73,5 @@ A collection of dirty hacks for helm!
   called =helm-linum-relative-mode= (type =C-x number= to select a candidate).
 
 * WARNING
-  *These are dirty hacks and it is highly likely that something may break after
-  the helm updates!*
+  *These are dirty hacks and it is highly likely that something may be BROKEN
+  after the helm updates!*
