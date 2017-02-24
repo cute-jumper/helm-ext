@@ -6,6 +6,18 @@ upstream.
 A collection of dirty hacks for helm!
 
 * Commands in =helm-find-files-ext.el=
+** Skipping Dots
+   When entering an *NON-EMPTY* directory using =helm-find-files=, skip the
+   first two entries, =.= and =..=. But if the directory is *EMPTY*, the
+   selection remains unchanged (still at the position of =.=).
+
+   To enable it:
+   : (helm-ff-ext-enable-skipping-dots t)
+
+   Demo (note that the selection skips the first two entries, =.= and =..= when
+   the directory is non-empty):
+   [[./screencasts/skip-dots.gif]]
+
 ** ZShell Like Path Expansion
    This enables zsh-style path expansion in Helm. For example, type =/h/q/f/b=
    and then execute the persistent action, the pattern expands to
@@ -36,18 +48,6 @@ A collection of dirty hacks for helm!
 
    To be improved: remove the restriction of only performing prefix matching in
    each level, making the matching behave more "fuzzily".
-
-** Skipping Dots
-   When entering an *NON-EMPTY* directory using =helm-find-files=, skip the
-   first two entries, =.= and =..=. But if the directory is *EMPTY*, the
-   selection remains unchanged (still at the position of =.=).
-
-   To enable it:
-   : (helm-ff-ext-enable-skipping-dots t)
-
-   Demo (note that the selection skips the first two entries, =.= and =..= when
-   the directory is non-empty):
-   [[./screencasts/skip-dots.gif]]
 
 * Commands in =helm-minibuffer-ext.el=
 ** Use Header Line for Minibuffer Completions
