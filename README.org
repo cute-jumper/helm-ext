@@ -1,14 +1,15 @@
 #+TITLE: helm-ext
 
-My own extensions to [[https://github.com/emacs-helm/helm][helm]], which I find useful but are probably not accepted in
+Extensions to [[https://github.com/emacs-helm/helm][helm]], which I find useful but are unlikely to be accepted in the
 upstream.
+
+A collection of dirty hacks for helm!
 
 * Commands in =helm-find-files-ext.el=
 ** ZShell Like Path Expansion
-
-   This enables zsh-style path expansion in Helm. For example, type =/h/q/f/b= and
-   then execute the persistent action, the pattern expands to
-   =/home/qjp/foo/bar=, =/home/qjp/foo1/bar1/= etc. Select the one you need using
+   This enables zsh-style path expansion in Helm. For example, type =/h/q/f/b=
+   and then execute the persistent action, the pattern expands to
+   =/home/qjp/foo/bar=, =/home/qjp/foo1/bar1/= etc. Select the candidate using
    the helm interface.
 
    To enable it:
@@ -18,8 +19,8 @@ upstream.
    [[./screencasts/zsh-expansion.gif]]
 
 ** Auto Path Expansion
-   This feature is similar to the previous one: zsh-style path expansion, but the
-   expansion is performed on-the-fly.
+   This feature is an improved version of the zsh-style path expansion. The
+   expansion is performed /ON-THE-FLY/ as you're typing the pattern!
 
    To enable it:
    : (helm-ff-ext-enable-auto-path-expansion t)
@@ -28,11 +29,9 @@ upstream.
    [[./screencasts/auto-expansion.gif]]
 
 ** Skipping Dots
-   I find it annoying that the default selection is =.= when you use
-   =helm-find-files= to enter a new directory. Enabling this will skip the first
-   two entries, =.= and =..= when the directory is *not* empty. But if the
-   directory is empty, which means there are only =.= and =..= in the current
-   directory, then the selection still remains at the position of =.=.
+   When entering an *NON-EMPTY* directory using =helm-find-files=, skip the
+   first two entries, =.= and =..=. But if the directory is *EMPTY*, the
+   selection remains unchanged (still at the position of =.=).
 
    To enable it:
    : (helm-ff-ext-enable-skipping-dots t)
@@ -43,10 +42,12 @@ upstream.
 
 * Commands in =helm-minibuffer-ext.el=
 ** Use Header Line for Minibuffer Completions
-   After enabling =helm-mode=, completions in the minibuffer can also trigger the
-   helm interface, but the problem is that it will reuse the minibuffer to enter
-   the pattern so we can't see the previous input. Enabling this will use the
-   header line to enter the pattern when completions happen in the minibuffer.
+   After enabling =helm-mode=, hitting =TAB= in the minibuffer when using
+   commands like =eval-expression= (=M-:=) can also trigger the helm interface,
+   but the problem is that the minibuffer is reused to enter the pattern so that
+   we can't see the previous input in the minibuffer. So, instead of reusing the
+   minibuffer to enter the pattern, use the header line to enter the pattern
+   when the completion is triggered from the minibuffer.
 
    To enable it:
    : (helm-minibuffer-ext-enable-header-line-maybe t)
