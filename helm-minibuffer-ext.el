@@ -37,8 +37,7 @@
       (overlay-put ov 'face
                    (let ((bg-color (face-background 'default nil)))
                      `(:background ,bg-color :foreground ,bg-color)))
-      (overlay-put ov 'before-string
-                   orig-input)
+      (overlay-put ov 'display orig-input)
       (setq-local cursor-type nil))))
 
 (defun helm-minibuffer-ext-enable-header-line-maybe (enable)
