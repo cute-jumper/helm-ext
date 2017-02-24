@@ -55,6 +55,6 @@ A collection of dirty hacks for helm!
    Demo:
    [[./screencasts/minibuffer-header.gif]]
 
-* Disclaim
-  These are dirty hacks and it is highly likely that something may break after
-  the helm updates!
+* WARNING
+  *These are dirty hacks and it is highly likely that something may break after
+  the helm updates!*
