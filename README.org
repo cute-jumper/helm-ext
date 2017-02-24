@@ -18,6 +18,8 @@ A collection of dirty hacks for helm!
    Demo:
    [[./screencasts/zsh-expansion.gif]]
 
+   Here is an [[http://cute-jumper.github.io/emacs/2015/11/17/let-helm-support-zshlike-path-expansion][old blog]] of mine dicussing about this feature.
+
 ** Auto Path Expansion
    This feature is an improved version of the zsh-style path expansion. The
    expansion is performed /ON-THE-FLY/ as you're typing the pattern!
