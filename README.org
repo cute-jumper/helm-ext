@@ -1,0 +1,41 @@
+#+TITLE: helm-ext
+
+My own extensions to [[https://github.com/emacs-helm/helm][helm]], which I find useful but are probably not accepted in
+upstream.
+
+* ZShell Like Path Expansion
+
+  This enables zsh-style path expansion in Helm. For example, type =/h/q/f/b= and
+  then execute the persistent action, the pattern expands to
+  =/home/qjp/foo/bar=, =/home/qjp/foo1/bar1/= etc. Select the one you need using
+  the helm interface.
+
+  To enable it:
+  : (helm-ff-ext-enable-zsh-path-expansion t)
+
+  Demo:
+  [[./screencasts/zsh-expansion.gif]]
+
+* Auto Path Expansion
+  This feature is similar to the previous one: zsh-style path expansion, but the
+  expansion is performed on-the-fly.
+
+  To enable it:
+  : (helm-ff-ext-enable-auto-path-expansion t)
+
+  Demo:
+  [[./screencasts/auto-expansion.gif]]
+
+* Skipping Dots
+  I find it annoying that the default selection is =.= when you use
+  =helm-find-files= to enter a new directory. Enable this will skip the first
+  two entries, =.= and =..= when the directory is *not* empty. But if the
+  directory is empty, which means there are only =.= and =..= in the current
+  directory, then the selection still remains at the position of =.=.
+
+  To enable it:
+  : (helm-ff-ext-enable-skipping-dots t)
+
+  Demo (note that the selection skips the first two entries, =.= and =..= when
+  the directory is non-empty):
+  [[./screencasts/skip-dots.gif]]
