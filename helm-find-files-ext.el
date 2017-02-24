@@ -28,7 +28,7 @@
 
 ;; helper functions
 (defvar helm-ff-expand-valid-only-p t)
-(defvar helm-ff-sort-expansions-p t)
+(defvar helm-ff-sort-expansions-p nil)
 (defvar helm-ff-ignore-case-p t)
 
 (defvar helm-ff--invalid-dir nil)
