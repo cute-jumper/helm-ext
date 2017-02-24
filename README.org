@@ -28,7 +28,7 @@ upstream.
 
 * Skipping Dots
   I find it annoying that the default selection is =.= when you use
-  =helm-find-files= to enter a new directory. Enable this will skip the first
+  =helm-find-files= to enter a new directory. Enabling this will skip the first
   two entries, =.= and =..= when the directory is *not* empty. But if the
   directory is empty, which means there are only =.= and =..= in the current
   directory, then the selection still remains at the position of =.=.
