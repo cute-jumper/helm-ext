@@ -71,9 +71,6 @@ A collection of dirty hacks for helm!
    To enable it:
    : (helm-minibuffer-ext-enable-header-line-maybe t)
 
-   Don't enable this one if you've already used the header line for inputting
-   the pattern by setting =helm-echo-input-in-header-line= to =t=.
-
    Demo:
    [[./screencasts/minibuffer-header.gif]]
 
