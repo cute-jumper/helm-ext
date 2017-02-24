@@ -18,6 +18,16 @@ A collection of dirty hacks for helm!
    the directory is non-empty):
    [[./screencasts/skip-dots.gif]]
 
+   It is also possible to "hide" the first two entries by recentering the first
+   line. Use the following code to enable such behavior:
+   : (setq helm-ff-ext-skipping-dots-recenter t)
+
+   Demo:
+   [[./screencasts/skip-dots-recenter.gif]]
+
+   You can see from the demo that the first two entries are just visually
+   "hiden". You can still use =C-p= to move the selection to them.
+
 ** ZShell Like Path Expansion
    This enables zsh-style path expansion in Helm. For example, type =/h/q/f/b=
    and then execute the persistent action, the pattern expands to
