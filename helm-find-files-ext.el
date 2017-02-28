@@ -214,6 +214,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
         (bd      (or (helm-basedir pattern) ""))
         ;; Trigger tramp connection with file-directory-p.
         (dir-p   (or (file-directory-p pattern)
+                     ;; Ext: as long as it ends with `/'
                      (string-match "/$" pattern)))
         (tramp-p (cl-loop for (m . f) in tramp-methods
                           thereis (string-match m pattern))))
@@ -222,39 +223,38 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
     ;; Always regexp-quote base directory name to handle
     ;; crap dirnames such e.g bookmark+
     ;; Ext: fuzzy match -- in order to bypass `helm-mm-match'
-    (substring
-     (replace-regexp-in-string
-      "/"
-      ".*/"
-      (cond
-       ((or (and dir-p tramp-p (string-match ":\\'" pattern))
-            (string= pattern "")
-            (and dir-p (<= (length bn) 2))
-            ;; Fix Issue #541 when BD have a subdir similar
-            ;; to BN, don't switch to match plugin
-            ;; which will match both.
-            (and dir-p (string-match (regexp-quote bn) bd)))
-        ;; Use full PATTERN on e.g "/ssh:host:".
-        (regexp-quote pattern))
-       ;; Prefixing BN with a space call multi-match completion.
-       ;; This allow showing all files/dirs matching BN (Issue #518).
-       ;; FIXME: some multi-match methods may not work here.
-       (dir-p (concat (regexp-quote bd) " " (regexp-quote bn)))
-       ((or (not (helm-ff-fuzzy-matching-p))
-            (string-match "\\s-" bn))    ; Fall back to multi-match.
-        (concat (regexp-quote bd) bn))
-       ((or (string-match "[*][.]?.*" bn) ; Allow entering wilcard.
-            (string-match "/$" pattern)   ; Allow mkdir.
-            (string-match helm-ff-url-regexp pattern)
-            (and (string= helm-ff-default-directory "/") tramp-p))
-        ;; Don't treat wildcards ("*") as regexp char.
-        ;; (e.g ./foo/*.el => ./foo/[*].el)
-        (concat (regexp-quote bd)
-                (replace-regexp-in-string "[*]" "[*]" bn)))
-       (t (concat (regexp-quote bd)
-                  (if (>= (length bn) 2) ; wait 2nd char before concating.
-                      (helm--mapconcat-pattern bn)
-                    (concat ".*" (regexp-quote bn))))))))))
+    (replace-regexp-in-string
+     "/"
+     ".*/"
+     (cond
+      ((or (and dir-p tramp-p (string-match ":\\'" pattern))
+           (string= pattern "")
+           (and dir-p (<= (length bn) 2))
+           ;; Fix Issue #541 when BD have a subdir similar
+           ;; to BN, don't switch to match plugin
+           ;; which will match both.
+           (and dir-p (string-match (regexp-quote bn) bd)))
+       ;; Use full PATTERN on e.g "/ssh:host:".
+       (regexp-quote pattern))
+      ;; Prefixing BN with a space call multi-match completion.
+      ;; This allow showing all files/dirs matching BN (Issue #518).
+      ;; FIXME: some multi-match methods may not work here.
+      (dir-p (concat (regexp-quote bd) " " (regexp-quote bn)))
+      ((or (not (helm-ff-fuzzy-matching-p))
+           (string-match "\\s-" bn))    ; Fall back to multi-match.
+       (concat (regexp-quote bd) bn))
+      ((or (string-match "[*][.]?.*" bn) ; Allow entering wilcard.
+           (string-match "/$" pattern)   ; Allow mkdir.
+           (string-match helm-ff-url-regexp pattern)
+           (and (string= helm-ff-default-directory "/") tramp-p))
+       ;; Don't treat wildcards ("*") as regexp char.
+       ;; (e.g ./foo/*.el => ./foo/[*].el)
+       (concat (regexp-quote bd)
+               (replace-regexp-in-string "[*]" "[*]" bn)))
+      (t (concat (regexp-quote bd)
+                 (if (>= (length bn) 2) ; wait 2nd char before concating.
+                     (helm--mapconcat-pattern bn)
+                   (concat ".*" (regexp-quote bn)))))))))
 
 (defun helm-find-files-1-ext (fname &optional preselect)
   "Find FNAME with `helm' completion.
