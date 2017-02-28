@@ -256,48 +256,11 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
                      (helm--mapconcat-pattern bn)
                    (concat ".*" (regexp-quote bn)))))))))
 
-(defun helm-find-files-1-ext (fname &optional preselect)
-  "Find FNAME with `helm' completion.
-Like `find-file' but with `helm' support.
-Use it for non--interactive calls of `helm-find-files'."
-  (when (get-buffer helm-action-buffer)
-    (kill-buffer helm-action-buffer))
-  (setq helm-find-files--toggle-bookmark nil)
-  (let* ( ;; Be sure we don't erase the precedent minibuffer if some.
-         (helm-ff-auto-update-initial-value
-          (and helm-ff-auto-update-initial-value
-               (not (minibuffer-window-active-p (minibuffer-window)))))
-         (tap (thing-at-point 'filename))
-         (def (and tap (or (file-remote-p tap)
-                           (expand-file-name tap)))))
-    (helm-set-local-variable 'helm-follow-mode-persistent nil)
-    (unless helm-source-find-files
-      (setq helm-source-find-files (helm-make-source
-                                       "Find Files" 'helm-source-ffiles)))
-    (mapc (lambda (hook)
-            (add-hook 'helm-after-update-hook hook))
-          '(helm-ff-move-to-first-real-candidate
-            helm-ff-update-when-only-one-matched
-            helm-ff-auto-expand-to-home-or-root))
-    (unwind-protect
-        (helm :sources 'helm-source-find-files
-              :input fname
-              :case-fold-search helm-file-name-case-fold-search
-              :preselect preselect
-              :ff-transformer-show-only-basename
-              helm-ff-transformer-show-only-basename
-              :default def
-              :prompt "Find files or url: "
-              :buffer "*helm find files*")
-      (helm-attrset 'resume (lambda ()
-                              (setq helm-ff-default-directory
-                                    helm-ff-default-directory
-                                    helm-ff-last-expanded
-                                    helm-ff-last-expanded))
-                    helm-source-find-files)
-      (setq helm-ff-default-directory nil)
-      ;; Ext: reset to nil
-      (setq helm-ff--invalid-dir nil))))
+(defun helm-ext--find-files-1 (orig-func &rest args)
+  (unwind-protect
+      (apply orig-func args)
+    ;; Ext: reset to nil
+    (setq helm-ff--invalid-dir nil)))
 
 (defun helm-ff-filter-candidate-one-by-one-ext (file)
   "`filter-one-by-one' Transformer function for `helm-source-find-files'."
@@ -403,9 +366,14 @@ Use it for non--interactive calls of `helm-find-files'."
 ;;;###autoload
 (defun helm-ff-ext-enable-auto-path-expansion (enable)
   (interactive)
+  (if enable
+      (advice-add 'helm-find-files-1
+                  :around
+                  'helm-ext--find-files-1)
+    (advice-remove 'helm-find-files-1
+                   'helm-ext--find-files-1))
   (dolist (func '(helm-find-files-get-candidates
                   helm-ff--transform-pattern-for-completion
-                  helm-find-files-1
                   helm-ff-filter-candidate-one-by-one))
     (let ((new-func (intern (format "%s-ext" (symbol-name func)))))
       (if enable
