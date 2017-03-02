@@ -354,41 +354,5 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
            (with-helm-window
              (recenter-top-bottom 0))))))
 
-;;;###autoload
-(defun helm-ext-ff-enable-zsh-path-expansion (enable)
-  (interactive)
-  (if enable
-      (advice-add 'helm-ff-kill-or-find-buffer-fname
-                  :around
-                  #'helm-ext-ff--try-expand-fname-first)
-    (advice-remove 'helm-ff-kill-or-find-buffer-fname
-                   #'helm-ext-ff--try-expand-fname-first)))
-;;;###autoload
-(defun helm-ext-ff-enable-auto-path-expansion (enable)
-  (interactive)
-  (if enable
-      (advice-add 'helm-find-files-1
-                  :around
-                  'helm-ext-find-files-1)
-    (advice-remove 'helm-find-files-1
-                   'helm-ext-find-files-1))
-  (dolist (func '(helm-find-files-get-candidates
-                  helm-ff--transform-pattern-for-completion
-                  helm-ff-filter-candidate-one-by-one))
-    (let ((new-func (intern (format "%s-ext" (symbol-name func)))))
-      (if enable
-          (advice-add func :override new-func)
-        (advice-remove func new-func)))))
-
-;;;###autoload
-(defun helm-ext-ff-enable-skipping-dots (enable)
-  (interactive)
-  (if enable
-      (advice-add 'helm-ff-move-to-first-real-candidate
-                  :around
-                  'helm-ext-ff-skip-dots)
-    (advice-remove 'helm-ff-move-to-first-real-candidate
-                   'helm-ext-ff-skip-dots)))
-
 (provide 'helm-find-files-ext)
 ;;; helm-find-files-ext.el ends here

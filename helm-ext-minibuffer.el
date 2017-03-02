@@ -40,11 +40,5 @@
       (overlay-put ov 'display orig-input)
       (setq-local cursor-type nil))))
 
-(defun helm-ext-minibuffer-enable-header-line-maybe (enable)
-  (if enable
-      (add-hook 'helm-minibuffer-set-up-hook 'helm-ext--use-header-line-maybe)
-    (remove-hook 'helm-minibuffer-set-up-hook 'helm-ext--use-header-line-maybe)))
-
-
 (provide 'helm-minibuffer-ext)
 ;;; helm-minibuffer-ext.el ends here
