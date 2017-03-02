@@ -26,11 +26,17 @@
 
 (require 'helm-files)
 
-(defvar helm-ext-ff-skipping-dots-recenter nil)
-;; helper functions
-(defvar helm-ext-ff-expand-valid-only-p t)
-(defvar helm-ext-ff-sort-expansions-p nil)
-(defvar helm-ext-ff-ignore-case-p t)
+(defvar helm-ext-ff-skipping-dots-recenter nil
+  "If t, recenter after skipping the dots.")
+
+(defvar helm-ext-ff-valid-expansion-only t
+  "It t, only consider valid path expansions.")
+
+(defvar helm-ext-ff-sort-expansions nil
+  "If t, sort the expansions.")
+
+(defvar helm-ext-ff-expansion-ignore-case t
+  "If t, ignore case when expanding the paths.")
 
 (defvar helm-ext-ff--invalid-dir nil)
 
@@ -56,9 +62,10 @@
             (setq valid-dir (concat valid-dir (pop dirparts) "/"))
           (throw 'break t))))
     (setq fnames (cons candidate (helm-ext-ff--try-expand-fname-1 valid-dir dirparts)))
-    (if helm-ext-ff-sort-expansions-p
+    (if helm-ext-ff-sort-expansions
         (sort fnames
-              (lambda (f1 f2) (or (file-directory-p f1)
+              (lambda (f1 f2) (or (file-exists-p f1)
+                              (file-directory-p f1)
                               (not (file-directory-p f2)))))
       fnames)))
 
@@ -71,14 +78,14 @@
                  (mapcar
                   (lambda (f)
                     (or (helm-ext-ff--try-expand-fname-1 f (cdr children))
-                        (unless helm-ext-ff-expand-valid-only-p
+                        (unless helm-ext-ff-valid-expansion-only
                           (and (file-directory-p f)
                                `(,(concat f "/" (mapconcat 'identity
                                                            (cdr children)
                                                            "/")))))))
                   (directory-files parent t
                                    (concat "^"
-                                           (if helm-ext-ff-ignore-case-p
+                                           (if helm-ext-ff-expansion-ignore-case
                                                (helm-ext-ff--generate-case-ignore-pattern
                                                 (car children))
                                              (car children))))))))
