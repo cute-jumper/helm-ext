@@ -1,4 +1,4 @@
-;;; helm-minibuffer-ext.el --- Extensions to helm minibuffer completion  -*- lexical-binding: t; -*-
+;;; helm-ext-minibuffer.el --- Extensions to helm minibuffer completion  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017  Junpeng Qiu
 
@@ -40,5 +40,5 @@
       (overlay-put ov 'display orig-input)
       (setq-local cursor-type nil))))
 
-(provide 'helm-minibuffer-ext)
-;;; helm-minibuffer-ext.el ends here
+(provide 'helm-ext-minibuffer)
+;;; helm-ext-minibuffer.el ends here

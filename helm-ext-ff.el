@@ -1,4 +1,4 @@
-;;; helm-find-files-ext.el --- Extension to helm-find-files  -*- lexical-binding: t; -*-
+;;; helm-ext-ff.el --- Extension to helm-find-files  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017  Junpeng Qiu
 
@@ -354,5 +354,5 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
            (with-helm-window
              (recenter-top-bottom 0))))))
 
-(provide 'helm-find-files-ext)
-;;; helm-find-files-ext.el ends here
+(provide 'helm-ext-ff)
+;;; helm-ext-ff.el ends here
