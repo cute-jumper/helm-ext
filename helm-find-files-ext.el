@@ -26,15 +26,15 @@
 
 (require 'helm-files)
 
-(defvar helm-ff-ext-skipping-dots-recenter t)
+(defvar helm-ext-ff-skipping-dots-recenter nil)
 ;; helper functions
-(defvar helm-ff-expand-valid-only-p t)
-(defvar helm-ff-sort-expansions-p nil)
-(defvar helm-ff-ignore-case-p t)
+(defvar helm-ext-ff-expand-valid-only-p t)
+(defvar helm-ext-ff-sort-expansions-p nil)
+(defvar helm-ext-ff-ignore-case-p t)
 
-(defvar helm-ff--invalid-dir nil)
+(defvar helm-ext-ff--invalid-dir nil)
 
-(defun helm-ff--generate-case-ignore-pattern (pattern)
+(defun helm-ext-ff--generate-case-ignore-pattern (pattern)
   (let (head (ci-pattern ""))
     (dotimes (i (length pattern) ci-pattern)
       (setq head (aref pattern i))
@@ -46,7 +46,7 @@
        (:else
         (setq ci-pattern (format "%s%c" ci-pattern head)))))))
 
-(defun helm-ff--try-expand-fname (candidate)
+(defun helm-ext-ff--try-expand-fname (candidate)
   (let ((dirparts (split-string candidate "/"))
         valid-dir
         fnames)
@@ -55,14 +55,14 @@
         (if (file-directory-p (concat valid-dir (car dirparts) "/"))
             (setq valid-dir (concat valid-dir (pop dirparts) "/"))
           (throw 'break t))))
-    (setq fnames (cons candidate (helm-ff--try-expand-fname-1 valid-dir dirparts)))
-    (if helm-ff-sort-expansions-p
+    (setq fnames (cons candidate (helm-ext-ff--try-expand-fname-1 valid-dir dirparts)))
+    (if helm-ext-ff-sort-expansions-p
         (sort fnames
               (lambda (f1 f2) (or (file-directory-p f1)
                               (not (file-directory-p f2)))))
       fnames)))
 
-(defun helm-ff--try-expand-fname-1 (parent children)
+(defun helm-ext-ff--try-expand-fname-1 (parent children)
   (if children
       (if (equal children '(""))
           (and (file-directory-p parent) `(,(concat parent "/")))
@@ -70,23 +70,23 @@
           (apply 'nconc
                  (mapcar
                   (lambda (f)
-                    (or (helm-ff--try-expand-fname-1 f (cdr children))
-                        (unless helm-ff-expand-valid-only-p
+                    (or (helm-ext-ff--try-expand-fname-1 f (cdr children))
+                        (unless helm-ext-ff-expand-valid-only-p
                           (and (file-directory-p f)
                                `(,(concat f "/" (mapconcat 'identity
                                                            (cdr children)
                                                            "/")))))))
                   (directory-files parent t
                                    (concat "^"
-                                           (if helm-ff-ignore-case-p
-                                               (helm-ff--generate-case-ignore-pattern
+                                           (if helm-ext-ff-ignore-case-p
+                                               (helm-ext-ff--generate-case-ignore-pattern
                                                 (car children))
                                              (car children))))))))
     `(,(concat parent (and (file-directory-p parent) "/")))))
 
-(defun helm-ff--try-expand-fname-first (orig-func &rest args)
+(defun helm-ext-ff--try-expand-fname-first (orig-func &rest args)
   (let* ((candidate (car args))
-         (collection (helm-ff--try-expand-fname candidate)))
+         (collection (helm-ext-ff--try-expand-fname candidate)))
     (if (and (> (length collection) 1)
              (not (file-exists-p candidate)))
         (with-helm-alive-p
@@ -95,7 +95,7 @@
              (helm-comp-read "Expand Path to: " collection :allow-nest t))))
       (apply orig-func args))))
 
-(defun helm-find-files-get-candidates-ext (&optional require-match)
+(defun helm-ext-find-files-get-candidates (&optional require-match)
   "Create candidate list for `helm-source-find-files'."
   (let* ((path          (helm-ff-set-pattern helm-pattern))
          (dir-p         (file-accessible-directory-p path))
@@ -182,7 +182,7 @@
           ;; Ext: list all possible expansions
           ((or invalid-basedir
                (and (not (file-exists-p path)) (string-match "/$" path)))
-           (helm-ff--try-expand-fname path))
+           (helm-ext-ff--try-expand-fname path))
           ((string= path "") (helm-ff-directory-files "/" t))
           ;; Check here if directory is accessible (not working on Windows).
           ((and (file-directory-p path) (not (file-readable-p path)))
@@ -199,7 +199,7 @@
                        (list path))
                      (helm-ff-directory-files basedir t))))))
 
-(defun helm-ff--transform-pattern-for-completion-ext (pattern)
+(defun helm-ext-ff--transform-pattern-for-completion-ext (pattern)
   "Maybe return PATTERN with it's basename modified as a regexp.
 This happen only when `helm-ff-fuzzy-matching' is enabled.
 This provide a similar behavior as `ido-enable-flex-matching'.
@@ -219,7 +219,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
         (tramp-p (cl-loop for (m . f) in tramp-methods
                           thereis (string-match m pattern))))
     ;; Ext: set invalid
-    (setq helm-ff--invalid-dir (not (file-exists-p bd)))
+    (setq helm-ext-ff--invalid-dir (not (file-exists-p bd)))
     ;; Always regexp-quote base directory name to handle
     ;; crap dirnames such e.g bookmark+
     ;; Ext: fuzzy match -- in order to bypass `helm-mm-match'
@@ -256,13 +256,13 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
                      (helm--mapconcat-pattern bn)
                    (concat ".*" (regexp-quote bn)))))))))
 
-(defun helm-ext--find-files-1 (orig-func &rest args)
+(defun helm-ext-find-files-1 (orig-func &rest args)
   (unwind-protect
       (apply orig-func args)
     ;; Ext: reset to nil
-    (setq helm-ff--invalid-dir nil)))
+    (setq helm-ext-ff--invalid-dir nil)))
 
-(defun helm-ff-filter-candidate-one-by-one-ext (file)
+(defun helm-ext-ff-filter-candidate-one-by-one (file)
   "`filter-one-by-one' Transformer function for `helm-source-find-files'."
   ;; Handle boring files
   (unless (and helm-ff-skip-boring-files
@@ -284,7 +284,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
       ;; Now highlight.
       (let* ((disp (if (and helm-ff-transformer-show-only-basename
                             ;; Ext: Don't show basename if not valid
-                            (not helm-ff--invalid-dir)
+                            (not helm-ext-ff--invalid-dir)
                             (not (helm-dir-is-dot file))
                             (not (and ffap-url-regexp
                                       (string-match ffap-url-regexp file)))
@@ -338,7 +338,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
                       (propertize disp 'face 'helm-ff-file) nil 'new-file)
                      file)))))))
 
-(defun helm-ff--skip-dots (orig-func &rest args)
+(defun helm-ext-ff-skip-dots (orig-func &rest args)
   (prog1 (apply orig-func args)
     (let ((src (helm-get-current-source))
           (flag nil))
@@ -355,23 +355,23 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
              (recenter-top-bottom 0))))))
 
 ;;;###autoload
-(defun helm-ff-ext-enable-zsh-path-expansion (enable)
+(defun helm-ext-ff-enable-zsh-path-expansion (enable)
   (interactive)
   (if enable
       (advice-add 'helm-ff-kill-or-find-buffer-fname
                   :around
-                  #'helm-ff--try-expand-fname-first)
+                  #'helm-ext-ff--try-expand-fname-first)
     (advice-remove 'helm-ff-kill-or-find-buffer-fname
-                   #'helm-ff--try-expand-fname-first)))
+                   #'helm-ext-ff--try-expand-fname-first)))
 ;;;###autoload
-(defun helm-ff-ext-enable-auto-path-expansion (enable)
+(defun helm-ext-ff-enable-auto-path-expansion (enable)
   (interactive)
   (if enable
       (advice-add 'helm-find-files-1
                   :around
-                  'helm-ext--find-files-1)
+                  'helm-ext-find-files-1)
     (advice-remove 'helm-find-files-1
-                   'helm-ext--find-files-1))
+                   'helm-ext-find-files-1))
   (dolist (func '(helm-find-files-get-candidates
                   helm-ff--transform-pattern-for-completion
                   helm-ff-filter-candidate-one-by-one))
@@ -381,14 +381,14 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
         (advice-remove func new-func)))))
 
 ;;;###autoload
-(defun helm-ff-ext-enable-skipping-dots (enable)
+(defun helm-ext-ff-enable-skipping-dots (enable)
   (interactive)
   (if enable
       (advice-add 'helm-ff-move-to-first-real-candidate
                   :around
-                  'helm-ff--skip-dots)
+                  'helm-ext-ff-skip-dots)
     (advice-remove 'helm-ff-move-to-first-real-candidate
-                   'helm-ff--skip-dots)))
+                   'helm-ext-ff-skip-dots)))
 
 (provide 'helm-find-files-ext)
 ;;; helm-find-files-ext.el ends here

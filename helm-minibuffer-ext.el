@@ -26,7 +26,7 @@
 
 (require 'helm)
 
-(defun helm--use-header-line-maybe ()
+(defun helm-ext--use-header-line-maybe ()
   (when (minibufferp (buffer-name helm-current-buffer))
     (with-helm-buffer
       (set (make-local-variable 'helm-echo-input-in-header-line) t))
@@ -40,10 +40,10 @@
       (overlay-put ov 'display orig-input)
       (setq-local cursor-type nil))))
 
-(defun helm-minibuffer-ext-enable-header-line-maybe (enable)
+(defun helm-ext-minibuffer-enable-header-line-maybe (enable)
   (if enable
-      (add-hook 'helm-minibuffer-set-up-hook 'helm--use-header-line-maybe)
-    (remove-hook 'helm-minibuffer-set-up-hook 'helm--use-header-line-maybe)))
+      (add-hook 'helm-minibuffer-set-up-hook 'helm-ext--use-header-line-maybe)
+    (remove-hook 'helm-minibuffer-set-up-hook 'helm-ext--use-header-line-maybe)))
 
 
 (provide 'helm-minibuffer-ext)
