@@ -206,7 +206,7 @@
                        (list path))
                      (helm-ff-directory-files basedir t))))))
 
-(defun helm-ext-ff--transform-pattern-for-completion-ext (pattern)
+(defun helm-ext-ff--transform-pattern-for-completion (pattern)
   "Maybe return PATTERN with it's basename modified as a regexp.
 This happen only when `helm-ff-fuzzy-matching' is enabled.
 This provide a similar behavior as `ido-enable-flex-matching'.

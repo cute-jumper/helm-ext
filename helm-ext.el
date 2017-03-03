@@ -185,13 +185,14 @@
                   'helm-ext-find-files-1)
     (advice-remove 'helm-find-files-1
                    'helm-ext-find-files-1))
-  (dolist (func '(helm-find-files-get-candidates
-                  helm-ff--transform-pattern-for-completion
-                  helm-ff-filter-candidate-one-by-one))
-    (let ((new-func (intern (format "%s-ext" (symbol-name func)))))
+  (dolist (func '(find-files-get-candidates
+                  ff--transform-pattern-for-completion
+                  ff-filter-candidate-one-by-one))
+    (let ((old-func (intern (format "helm-%s" func)))
+          (new-func (intern (format "helm-ext-%s" func))))
       (if enable
-          (advice-add func :override new-func)
-        (advice-remove func new-func)))))
+          (advice-add old-func :override new-func)
+        (advice-remove old-func new-func)))))
 
 ;;;###autoload
 (defun helm-ext-ff-enable-skipping-dots (enable)
