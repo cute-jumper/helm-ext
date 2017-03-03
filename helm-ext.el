@@ -1,11 +1,11 @@
-;;; helm-ext.el --- Helm extensions                  -*- lexical-binding: t; -*-
+;;; helm-ext.el --- A few extensions to Helm                  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017  Junpeng Qiu
 
 ;; Author: Junpeng Qiu <qjpchmail@gmail.com>
 ;; Keywords: extensions
 ;; Version: 0.1.0
-;; Package-Requires: ((helm "2.5.3"))
+;; Package-Requires: ((emacs "24") (helm "2.5.3"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
