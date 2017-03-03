@@ -5,6 +5,9 @@ upstream.
 
 A collection of dirty hacks for helm!
 
+*Attention: Please use the code given in the README instead of the code shown in
+the demos!*
+
 * Skipping Dots
   When entering an *NON-EMPTY* directory using =helm-find-files=, skip the
   first two entries, =.= and =..=. But if the directory is *EMPTY*, the
