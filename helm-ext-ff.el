@@ -356,7 +356,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
       (when (and (helm-end-of-source-p)
                  (helm-dir-is-dot (helm-get-selection nil nil src)))
         (helm-previous-line))
-      (and helm-ff-ext-skipping-dots-recenter
+      (and helm-ext-ff-skipping-dots-recenter
            flag
            (with-helm-window
              (recenter-top-bottom 0))))))
