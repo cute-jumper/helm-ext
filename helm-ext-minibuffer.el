@@ -37,7 +37,7 @@
       (overlay-put ov 'face
                    (let ((bg-color (face-background 'default nil)))
                      `(:background ,bg-color :foreground ,bg-color)))
-      (overlay-put ov 'display orig-input)
+      (overlay-put ov 'before-string orig-input)
       (setq-local cursor-type nil))))
 
 (provide 'helm-ext-minibuffer)
