@@ -25,6 +25,7 @@
 ;;; Code:
 
 (require 'helm-files)
+(require 'helm-mode)
 
 (defvar helm-ext-ff-skipping-dots-recenter nil
   "If t, recenter after skipping the dots.")
