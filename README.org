@@ -1,4 +1,5 @@
 #+TITLE: helm-ext
+[[https://melpa.org/#/helm-ext][file:https://melpa.org/packages/helm-ext-badge.svg]]
 
 Extensions to [[https://github.com/emacs-helm/helm][helm]], which I find useful but are unlikely to be accepted in the
 upstream.
