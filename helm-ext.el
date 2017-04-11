@@ -205,6 +205,49 @@
                    'helm-ext-ff-skip-dots)))
 
 ;;;###autoload
+(defun helm-ext-ff-enable-split-actions (enable)
+  (interactive)
+  (require 'helm-types)
+  (if enable
+      (progn
+        (add-to-list 'helm-find-files-actions
+                     helm-ext-ff--horizontal-split-action t)
+        (add-to-list 'helm-find-files-actions
+                     helm-ext-ff--vertical-split-action t)
+        (add-to-list 'helm-type-buffer-actions
+                     helm-ext-ff--buffer-horizontal-split-action t)
+        (add-to-list 'helm-type-buffer-actions
+                     helm-ext-ff--buffer-vertical-split-action t)
+        (define-key helm-find-files-map
+          (kbd helm-ext-ff-horizontal-split-key) #'helm-ext-ff-execute-horizontal-split)
+        (define-key helm-buffer-map
+          (kbd helm-ext-ff-horizontal-split-key) #'helm-ext-ff-execute-horizontal-split)
+        (define-key helm-find-files-map
+          (kbd helm-ext-ff-vertical-split-key) #'helm-ext-ff-execute-vertical-split)
+        (define-key helm-buffer-map
+          (kbd helm-ext-ff-vertical-split-key) #'helm-ext-ff-execute-vertical-split))
+    (setq helm-find-files-actions
+          (delete helm-ext-ff--horizontal-split-action
+                  helm-find-files-actions))
+    (setq helm-find-files-actions
+          (delete helm-ext-ff--vertical-split-action
+                  helm-find-files-actions))
+    (setq helm-type-buffer-actions
+          (delete helm-ext-ff--buffer-horizontal-split-action
+                  helm-type-buffer-actions))
+    (setq helm-type-buffer-actions
+          (delete helm-ext-ff--buffer-vertical-split-action
+                  helm-type-buffer-actions))
+    (define-key helm-find-files-map
+      (kbd helm-ext-ff-horizontal-split-key) nil)
+    (define-key helm-buffer-map
+      (kbd helm-ext-ff-horizontal-split-key) nil)
+    (define-key helm-find-files-map
+      (kbd helm-ext-ff-vertical-split-key) nil)
+    (define-key helm-buffer-map
+      (kbd helm-ext-ff-vertical-split-key) nil)))
+
+;;;###autoload
 (defun helm-ext-minibuffer-enable-header-line-maybe (enable)
   (if enable
       (add-hook 'helm-minibuffer-set-up-hook 'helm-ext--use-header-line-maybe)

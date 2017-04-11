@@ -362,5 +362,50 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
            (with-helm-window
              (recenter-top-bottom 0))))))
 
+(defvar helm-ext-ff--horizontal-split-action
+  '("Find file in horizontal split" .
+    helm-ext-ff-action-horizontal-split))
+
+(defvar helm-ext-ff--vertical-split-action
+  '("Find file in vertical split" .
+    helm-ext-ff-action-vertical-split))
+
+(defvar helm-ext-ff--buffer-horizontal-split-action
+  '("View buffer in horizontal split" .
+    helm-ext-ff-action-horizontal-split))
+
+(defvar helm-ext-ff--buffer-vertical-split-action
+  '("View buffer in vertical split" .
+    helm-ext-ff-action-vertical-split))
+
+(defvar helm-ext-ff-horizontal-split-key "C-c s h")
+(defvar helm-ext-ff-vertical-split-key "C-c s v")
+
+(defun helm-ext-ff-action-horizontal-split (candidate)
+  (dolist (buf (helm-marked-candidates))
+    (select-window (split-window-below))
+    (if (get-buffer buf)
+        (switch-to-buffer buf)
+      (find-file buf)))
+  (balance-windows))
+
+(defun helm-ext-ff-action-vertical-split (candidate)
+  (dolist (buf (helm-marked-candidates))
+    (select-window (split-window-right))
+    (if (get-buffer buf)
+        (switch-to-buffer buf)
+      (find-file buf)))
+  (balance-windows))
+
+(defun helm-ext-ff-execute-horizontal-split ()
+  (interactive)
+  (with-helm-alive-p
+    (helm-exit-and-execute-action 'helm-ext-ff-action-horizontal-split)))
+
+(defun helm-ext-ff-execute-vertical-split ()
+  (interactive)
+  (with-helm-alive-p
+    (helm-exit-and-execute-action 'helm-ext-ff-action-vertical-split)))
+
 (provide 'helm-ext-ff)
 ;;; helm-ext-ff.el ends here
