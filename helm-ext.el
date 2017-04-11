@@ -218,14 +218,11 @@
                      helm-ext-ff--buffer-horizontal-split-action t)
         (add-to-list 'helm-type-buffer-actions
                      helm-ext-ff--buffer-vertical-split-action t)
-        (define-key helm-find-files-map
-          (kbd helm-ext-ff-horizontal-split-key) #'helm-ext-ff-execute-horizontal-split)
-        (define-key helm-buffer-map
-          (kbd helm-ext-ff-horizontal-split-key) #'helm-ext-ff-execute-horizontal-split)
-        (define-key helm-find-files-map
-          (kbd helm-ext-ff-vertical-split-key) #'helm-ext-ff-execute-vertical-split)
-        (define-key helm-buffer-map
-          (kbd helm-ext-ff-vertical-split-key) #'helm-ext-ff-execute-vertical-split))
+        (dolist (keymap helm-ext-ff-split-actions-keymaps)
+          (define-key keymap
+            (kbd helm-ext-ff-horizontal-split-key) #'helm-ext-ff-execute-horizontal-split)
+          (define-key keymap
+            (kbd helm-ext-ff-vertical-split-key) #'helm-ext-ff-execute-vertical-split)))
     (setq helm-find-files-actions
           (delete helm-ext-ff--horizontal-split-action
                   helm-find-files-actions))
@@ -238,14 +235,11 @@
     (setq helm-type-buffer-actions
           (delete helm-ext-ff--buffer-vertical-split-action
                   helm-type-buffer-actions))
-    (define-key helm-find-files-map
-      (kbd helm-ext-ff-horizontal-split-key) nil)
-    (define-key helm-buffer-map
-      (kbd helm-ext-ff-horizontal-split-key) nil)
-    (define-key helm-find-files-map
-      (kbd helm-ext-ff-vertical-split-key) nil)
-    (define-key helm-buffer-map
-      (kbd helm-ext-ff-vertical-split-key) nil)))
+    (dolist (keymap helm-ext-ff-split-actions-keymaps)
+      (define-key keymap
+        (kbd helm-ext-ff-horizontal-split-key) nil)
+      (define-key keymap
+        (kbd helm-ext-ff-vertical-split-key) nil))))
 
 ;;;###autoload
 (defun helm-ext-minibuffer-enable-header-line-maybe (enable)

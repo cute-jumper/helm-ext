@@ -380,6 +380,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
 
 (defvar helm-ext-ff-horizontal-split-key "C-c s h")
 (defvar helm-ext-ff-vertical-split-key "C-c s v")
+(defvar helm-ext-ff-split-actions-keymaps (list helm-find-files-map helm-buffer-map))
 
 (defun helm-ext-ff-action-horizontal-split (candidate)
   (dolist (buf (helm-marked-candidates))
