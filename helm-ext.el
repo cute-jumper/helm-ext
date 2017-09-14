@@ -220,9 +220,9 @@
                      helm-ext-ff--buffer-vertical-split-action t)
         (dolist (keymap helm-ext-ff-split-actions-keymaps)
           (define-key keymap
-            (kbd helm-ext-ff-horizontal-split-key) #'helm-ext-ff-execute-horizontal-split)
+            (kbd helm-ext-ff-horizontal-split-key) #'helm-ext-ff-buffer-execute-horizontal-split)
           (define-key keymap
-            (kbd helm-ext-ff-vertical-split-key) #'helm-ext-ff-execute-vertical-split)))
+            (kbd helm-ext-ff-vertical-split-key) #'helm-ext-ff-buffer-execute-vertical-split)))
     (setq helm-find-files-actions
           (delete helm-ext-ff--horizontal-split-action
                   helm-find-files-actions))

@@ -382,31 +382,46 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
 (defvar helm-ext-ff-vertical-split-key "C-c s v")
 (defvar helm-ext-ff-split-actions-keymaps (list helm-find-files-map helm-buffer-map))
 
-(defun helm-ext-ff-action-horizontal-split (_candidate)
-  (dolist (buf (helm-marked-candidates))
-    (select-window (split-window-below))
-    (if (get-buffer buf)
-        (switch-to-buffer buf)
-      (find-file buf)))
-  (balance-windows))
+(defun helm-ext-ff-default-find-function (candidate)
+  (if (get-buffer candidate)
+      (switch-to-buffer candidate)
+    (find-file candidate)))
 
-(defun helm-ext-ff-action-vertical-split (_candidate)
-  (dolist (buf (helm-marked-candidates))
-    (select-window (split-window-right))
-    (if (get-buffer buf)
-        (switch-to-buffer buf)
-      (find-file buf)))
-  (balance-windows))
+(defun helm-ext-ff-get-split-function (type find-func balance-p)
+  (let ((body (list 'lambda '(buf)
+                    `(select-window (,(if (eq type 'horizontal)
+                                          'split-window-below
+                                        'split-window-right)))
+                    `(,find-func buf))))
+    (if balance-p
+        (append body '((balance-windows)))
+      body)))
 
-(defun helm-ext-ff-execute-horizontal-split ()
-  (interactive)
-  (with-helm-alive-p
-    (helm-exit-and-execute-action 'helm-ext-ff-action-horizontal-split)))
+(defmacro helm-ext-ff-define-split (name type find-func &optional balance-p)
+  (declare (indent 2))
+  (let ((action-func (intern (format "helm-ext-ff-%s-action-%s-split" name type)))
+        (execution-func (intern (format "helm-ext-ff-%s-execute-%s-split" name type)))
+        (split-func (helm-ext-ff-get-split-function type find-func balance-p)))
+    `(progn
+       (defun ,action-func (_candidate)
+         (dolist (buf (helm-marked-candidates))
+           (,split-func buf)))
+       (defun ,execution-func ()
+         (interactive)
+         (with-helm-alive-p
+           (helm-exit-and-execute-action ',action-func))))))
 
-(defun helm-ext-ff-execute-vertical-split ()
-  (interactive)
-  (with-helm-alive-p
-    (helm-exit-and-execute-action 'helm-ext-ff-action-vertical-split)))
+(helm-ext-ff-define-split
+    buffer
+    horizontal
+  helm-ext-ff-default-find-function
+  t)
+
+(helm-ext-ff-define-split
+    buffer
+    vertical
+  helm-ext-ff-default-find-function
+  t)
 
 (provide 'helm-ext-ff)
 ;;; helm-ext-ff.el ends here
