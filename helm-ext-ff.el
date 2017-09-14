@@ -397,6 +397,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
         (append body '((balance-windows)))
       body)))
 
+;;;###autoload
 (defmacro helm-ext-ff-define-split (name type find-func &optional balance-p)
   (declare (indent 2))
   (let ((action-func (intern (format "helm-ext-ff-%s-action-%s-split" name type)))
@@ -405,7 +406,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
     `(progn
        (defun ,action-func (_candidate)
          (dolist (buf (helm-marked-candidates))
-           (,split-func buf)))
+           (funcall ,split-func buf)))
        (defun ,execution-func ()
          (interactive)
          (with-helm-alive-p
