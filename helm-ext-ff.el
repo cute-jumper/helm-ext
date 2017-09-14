@@ -122,7 +122,7 @@
              ;; An empty pattern
              (string= path "")
              (and (string-match-p ":\\'" path)
-                  (helm-ff-tramp-postfixed-p path))
+                  (helm-ff--tramp-postfixed-p path))
              ;; Check if base directory of PATH is valid.
              (helm-aif (file-name-directory path)
                  ;; If PATH is a valid directory IT=PATH,
@@ -134,7 +134,7 @@
       (setq invalid-basedir t))
     ;; Don't set now `helm-pattern' if `path' == "Invalid tramp file name"
     ;; like that the actual value (e.g /ssh:) is passed to
-    ;; `helm-ff-tramp-hostnames'.
+    ;; `helm-ff--tramp-hostnames'.
     (unless (or (string= path "Invalid tramp file name")
                 ;; Ext: remove invalid-basedir
                 )      ; Leave  helm-pattern unchanged.
@@ -170,7 +170,7 @@
                (file-remote-p basedir nil t))
       (setq helm-pattern basedir))
     (cond ((string= path "Invalid tramp file name")
-           (or (helm-ff-tramp-hostnames) ; Hostnames completion.
+           (or (helm-ff--tramp-hostnames) ; Hostnames completion.
                (prog2
                    ;; `helm-pattern' have not been modified yet.
                    ;; Set it here to the value of `path' that should be now
@@ -285,7 +285,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
         (if helm-ff-transformer-show-only-basename
             (if (helm-dir-is-dot file)
                 file
-              (cons (or (helm-ff-get-host-from-tramp-invalid-fname file)
+              (cons (or (helm-ff--get-host-from-tramp-invalid-fname file)
                         (helm-basename file))
                     file))
           file)
@@ -297,7 +297,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
                             (not (and ffap-url-regexp
                                       (string-match ffap-url-regexp file)))
                             (not (string-match helm-ff-url-regexp file)))
-                       (or (helm-ff-get-host-from-tramp-invalid-fname file)
+                       (or (helm-ff--get-host-from-tramp-invalid-fname file)
                            (helm-basename file)) file))
              (attr (file-attributes file))
              (type (car attr)))
@@ -382,7 +382,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
 (defvar helm-ext-ff-vertical-split-key "C-c s v")
 (defvar helm-ext-ff-split-actions-keymaps (list helm-find-files-map helm-buffer-map))
 
-(defun helm-ext-ff-action-horizontal-split (candidate)
+(defun helm-ext-ff-action-horizontal-split (_candidate)
   (dolist (buf (helm-marked-candidates))
     (select-window (split-window-below))
     (if (get-buffer buf)
@@ -390,7 +390,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
       (find-file buf)))
   (balance-windows))
 
-(defun helm-ext-ff-action-vertical-split (candidate)
+(defun helm-ext-ff-action-vertical-split (_candidate)
   (dolist (buf (helm-marked-candidates))
     (select-window (split-window-right))
     (if (get-buffer buf)
