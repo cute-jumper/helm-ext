@@ -24,6 +24,7 @@
 
 ;;; Code:
 
+(require 'ffap)
 (require 'helm-files)
 (require 'helm-mode)
 
