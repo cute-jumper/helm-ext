@@ -351,13 +351,14 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
   (prog1 (apply orig-func args)
     (unless (helm-empty-buffer-p helm-buffer)
 	  (let ((src (helm-get-current-source))
-			(flag nil))
+			(flag nil)
+			(scroll-margin 0))
 		(while (and (not (helm-end-of-source-p))
-					(helm-dir-is-dot (helm-get-selection nil nil src)))
+					(helm-dir-is-dot (helm-get-selection nil t src)))
 		  (helm-next-line)
 		  (setq flag t))
 		(when (and (helm-end-of-source-p)
-				   (helm-dir-is-dot (helm-get-selection nil nil src)))
+				   (helm-dir-is-dot (helm-get-selection nil t src)))
 		  (helm-previous-line))
 		(and helm-ext-ff-skipping-dots-recenter
 			 flag
