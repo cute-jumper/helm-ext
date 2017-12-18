@@ -349,19 +349,21 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
 
 (defun helm-ext-ff-skip-dots (orig-func &rest args)
   (prog1 (apply orig-func args)
-    (let ((src (helm-get-current-source))
-          (flag nil))
-      (while (and (not (helm-end-of-source-p))
-                  (helm-dir-is-dot (helm-get-selection nil nil src)))
-        (helm-next-line)
-        (setq flag t))
-      (when (and (helm-end-of-source-p)
-                 (helm-dir-is-dot (helm-get-selection nil nil src)))
-        (helm-previous-line))
-      (and helm-ext-ff-skipping-dots-recenter
-           flag
-           (with-helm-window
-             (recenter-top-bottom 0))))))
+    (unless (helm-empty-buffer-p helm-buffer)
+	  (let ((src (helm-get-current-source))
+			(flag nil)
+			(scroll-margin 0))
+		(while (and (not (helm-end-of-source-p))
+					(helm-dir-is-dot (helm-get-selection nil t src)))
+		  (helm-next-line)
+		  (setq flag t))
+		(when (and (helm-end-of-source-p)
+				   (helm-dir-is-dot (helm-get-selection nil t src)))
+		  (helm-previous-line))
+		(and helm-ext-ff-skipping-dots-recenter
+			 flag
+			 (with-helm-window
+			   (recenter-top-bottom 0)))))))
 
 (defvar helm-ext-ff--horizontal-split-action
   '("Find file in horizontal split" .
