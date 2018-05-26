@@ -192,21 +192,21 @@
           ((or invalid-basedir
                (and (not (file-exists-p path)) (string-match "/$" path)))
            (helm-ext-ff--try-expand-fname path))
-          ((string= path "") (helm-ff-directory-files "/" t))
+          ((string= path "") (helm-ff-directory-files "/"))
           ;; Check here if directory is accessible (not working on Windows).
           ((and (file-directory-p path) (not (file-readable-p path)))
            (list (format "file-error: Opening directory permission denied `%s'" path)))
           ;; A fast expansion of PATH is made only if `helm-ff-auto-update-flag'
           ;; is enabled.
           ((and dir-p helm-ff-auto-update-flag)
-           (helm-ff-directory-files path t))
+           (helm-ff-directory-files path))
           (t (append (unless (or require-match
                                  ;; When `helm-ff-auto-update-flag' has been
                                  ;; disabled, whe don't want PATH to be added on top
                                  ;; if it is a directory.
                                  dir-p)
                        (list path))
-                     (helm-ff-directory-files basedir t))))))
+                     (helm-ff-directory-files basedir))))))
 
 (defun helm-ext-ff--transform-pattern-for-completion (pattern)
   "Maybe return PATTERN with it's basename modified as a regexp.
