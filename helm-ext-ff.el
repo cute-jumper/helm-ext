@@ -67,8 +67,8 @@
     (if helm-ext-ff-sort-expansions
         (sort fnames
               (lambda (f1 f2) (or (file-exists-p f1)
-                              (file-directory-p f1)
-                              (not (file-directory-p f2)))))
+                                  (file-directory-p f1)
+                                  (not (file-directory-p f2)))))
       fnames)))
 
 (defun helm-ext-ff--try-expand-fname-1 (parent children)
@@ -187,11 +187,11 @@
                ;; `ffap-url-regexp' don't match until url is complete.
                (string-match helm-ff-url-regexp path)
                (and ffap-url-regexp (string-match ffap-url-regexp path)))
-           (list path))
+           (list (helm-ff-filter-candidate-one-by-one path nil t)))
           ;; Ext: list all possible expansions
           ((or invalid-basedir
                (and (not (file-exists-p path)) (string-match "/$" path)))
-           (helm-ext-ff--try-expand-fname path))
+           (mapcar (lambda (p) (helm-ext-ff-filter-candidate-one-by-one p nil t)) (helm-ext-ff--try-expand-fname path)))
           ((string= path "") (helm-ff-directory-files "/"))
           ;; Check here if directory is accessible (not working on Windows).
           ((and (file-directory-p path) (not (file-readable-p path)))
@@ -200,13 +200,15 @@
           ;; is enabled.
           ((and dir-p helm-ff-auto-update-flag)
            (helm-ff-directory-files path))
-          (t (append (unless (or require-match
-                                 ;; When `helm-ff-auto-update-flag' has been
-                                 ;; disabled, whe don't want PATH to be added on top
-                                 ;; if it is a directory.
-                                 dir-p)
-                       (list path))
-                     (helm-ff-directory-files basedir))))))
+          (t
+           (append (unless (or require-match
+                               ;; When `helm-ff-auto-update-flag' has been
+                               ;; disabled, whe don't want PATH to be added on top
+                               ;; if it is a directory.
+                               (file-exists-p path)
+                               dir-p)
+                     (list (helm-ext-ff-filter-candidate-one-by-one path nil t)))
+                   (helm-ff-directory-files basedir))))))
 
 (defun helm-ext-ff--transform-pattern-for-completion (pattern)
   "Maybe return PATTERN with it's basename modified as a regexp.
@@ -271,7 +273,7 @@ If PATTERN is a valid directory name,return PATTERN unchanged."
     ;; Ext: reset to nil
     (setq helm-ext-ff--invalid-dir nil)))
 
-(defun helm-ext-ff-filter-candidate-one-by-one (file)
+(defun helm-ext-ff-filter-candidate-one-by-one (file &optional reverse skip-boring-check)
   "`filter-one-by-one' Transformer function for `helm-source-find-files'."
   ;; Handle boring files
   (unless (and helm-ff-skip-boring-files
